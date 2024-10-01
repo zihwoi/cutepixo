@@ -1,28 +1,94 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'JetBrains Mono', monospace; 
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     height: 100vh;
     margin: 0;
-    background-color: #f0f0f0;
-  }
-  
-  .container {
+    background-color: #f0f0f0; 
+    color: black; 
+    transition: background-color 0.3s ease, color 0.3s ease; 
+}
+
+.container {
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-  
-  canvas {
-    border: 2px solid #000;
+}
+
+canvas {
+    border: 2px solid #000; 
     margin-top: 10px;
-  }
-  
-  .controls {
+    transition: border-color 0.3s ease; 
+}
+
+.controls {
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* Center controls horizontally */
+    align-items: center; /* Center controls vertically */
     margin-bottom: 10px;
-  }
-  
+}
+
+button {
+    font-family: 'JetBrains Mono', monospace; 
+    font-weight: 500; 
+    background: none; 
+    border: none; 
+    color: black; 
+    cursor: pointer; 
+    margin: 0 10px; 
+    position: relative; 
+    padding: 10px; 
+    transition: color 0.3s ease; /* Add transition for color change */
+}
+
+button:hover {
+    color: #555; /* Change color on hover for feedback */
+}
+
+button::after {
+    content: ''; 
+    display: block; 
+    height: 2px; 
+    width: 100%; 
+    background-color: black; 
+    position: absolute; 
+    left: 0; 
+    bottom: -5px; 
+    transform: scaleX(0); 
+    transition: transform 0.3s ease; 
+}
+
+button:hover::after {
+    transform: scaleX(1); 
+}
+
+select {
+    font-family: 'JetBrains Mono', monospace; 
+    font-weight: 500; 
+    background: none; 
+   
+    padding: 0px 5px; /* Padding for better click area */
+    margin: 0 10px; 
+    height: 25px; /* Set a fixed height for the dropdown */
+    font-size: 14px; /* Font size for consistency */
+}
+
+/* Dark Mode Styles */
+.dark-mode {
+    background-color: #121212; 
+    color: white; 
+}
+
+.dark-mode canvas {
+    border-color: white; 
+}
+
+.dark-mode input[type="color"],
+.dark-mode button,
+.dark-mode select {
+    background-color: #444; 
+    color: white; 
+    border: 1px solid white; 
+}

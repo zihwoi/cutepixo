@@ -38,13 +38,37 @@ const pixelArtObjects = {
     // Add more pixel designs here
 };
 
-function drawPixel(x, y, color) {
-    if (color === 'black') {
-        ctx.fillStyle = color;
-        ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
-    }
+let painting = false; // Flag to track if the user is currently painting
+
+// Start painting
+function startPosition(e) {
+    painting = true;
+    draw(e);
 }
 
+// End painting
+function endPosition() {
+    painting = false;
+    ctx.beginPath(); // Start a new path
+}
+
+// Draw on canvas
+function draw(e) {
+    if (!painting) return;
+
+    const x = Math.floor((e.clientX - canvas.offsetLeft) / pixelSize);
+    const y = Math.floor((e.clientY - canvas.offsetTop) / pixelSize);
+    
+    drawPixel(x, y, colorPicker.value); // Use the color selected from the color picker
+}
+
+// Draw pixel function to fill the pixel
+function drawPixel(x, y, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+}
+
+// Function to generate pixel art
 function generatePixelArt(artName) {
     const art = pixelArtObjects[artName];
 
@@ -89,3 +113,8 @@ generateArtBtn.addEventListener('click', () => {
     const selectedArt = pixelArtSelector.value;
     generatePixelArt(selectedArt);
 });
+
+// Mouse event listeners for drawing functionality
+canvas.addEventListener('mousedown', startPosition);
+canvas.addEventListener('mouseup', endPosition);
+canvas.addEventListener('mousemove', draw);
