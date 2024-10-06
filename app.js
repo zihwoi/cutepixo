@@ -114,6 +114,13 @@ generateArtBtn.addEventListener('click', () => {
     generatePixelArt(selectedArt);
 });
 
+const toggleDarkModeBtn = document.getElementById('toggleDarkMode');
+
+toggleDarkModeBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode'); // Toggle the dark mode class
+});
+
+
 // Mouse event listeners for drawing functionality
 canvas.addEventListener('mousedown', startPosition);
 canvas.addEventListener('mouseup', endPosition);
