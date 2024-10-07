@@ -63,6 +63,39 @@ button::after {
 button:hover::after {
     transform: scaleX(1); 
 }
+/* Eraser Button Styles */
+#eraserBtn {
+    background-color: #f0f0f0; /* Default background */
+    padding: 10px 15px; /* Padding */
+    cursor: pointer; /* Pointer on hover */
+    transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s; /* Transition for smooth effect */
+}
+
+/* Hover effect */
+#eraserBtn:hover {
+    background-color: #e3e3e3; /* Light gray on hover */
+}
+
+/* Active effect when clicked */
+#eraserBtn.active {
+    background-color: #ebebeb; /* Light gray when active */
+    border-color: #333333; /* Darker border when active */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5), inset 0 0 5px rgba(0, 0, 0, 0.5); /* Add inner shadow to indicate click */
+}
+
+/* Dark Mode Styles for Eraser Button */
+.dark-mode #eraserBtn {
+    background-color: #333333; /* Dark background for active state */
+    color: white; /* White text for contrast */
+}
+
+/* Dark Mode Active Effect */
+.dark-mode #eraserBtn.active {
+    background-color: #1c1b1b; /* Darker gray when active in dark mode */
+    border-color: #ffffff; /* White border when active in dark mode */
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.7), inset 0 0 10px rgba(255, 255, 255, 0.3); /* Stronger inner shadow */
+    transform: translateY(2px); /* Slight downward movement to simulate a pressed button */
+}
 
 select {
     font-family: 'JetBrains Mono', monospace; 
