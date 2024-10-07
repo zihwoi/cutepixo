@@ -92,3 +92,44 @@ select {
     color: white; 
     border: 1px solid white; 
 }
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+        height: auto; /* Allow height to adjust on small screens */
+        padding: 10px; /* Add padding for smaller screens */
+    }
+
+    canvas {
+        max-width: 100%; /* Make sure it doesn't exceed the viewport */
+        height: auto; /* Maintain aspect ratio */
+    }
+
+    .controls {
+        flex-direction: column; /* Stack controls vertically */
+        align-items: stretch; /* Stretch buttons to full width */
+    }
+
+    button {
+        width: 100%; /* Make buttons full width on small screens */
+        margin: 5px 0; /* Adjust margins for vertical spacing */
+    }
+
+    select {
+        width: 100%; /* Make the select box full width */
+        margin: 5px 0; /* Adjust margins for vertical spacing */
+    }
+}
+
+/* Additional responsive styles for smaller devices */
+@media (max-width: 480px) {
+    button {
+        font-size: 14px; /* Smaller font size for buttons */
+        padding: 8px; /* Adjust padding */
+    }
+
+    select {
+        font-size: 12px; /* Smaller font size for select box */
+    }
+}
