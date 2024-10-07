@@ -39,6 +39,7 @@ const pixelArtObjects = {
 };
 
 let painting = false; // Flag to track if the user is currently painting
+let isErasing = false; // Flag to track if the eraser is active
 
 // Start painting
 function startPosition(e) {
@@ -59,13 +60,35 @@ function draw(e) {
     const x = Math.floor((e.clientX - canvas.offsetLeft) / pixelSize);
     const y = Math.floor((e.clientY - canvas.offsetTop) / pixelSize);
     
-    drawPixel(x, y, colorPicker.value); // Use the color selected from the color picker
+    if (isErasing) {
+        erasePixel(x, y); // Call the erase function
+    } else {
+        drawPixel(x, y, colorPicker.value); // Use the color selected from the color picker
+        saveState(); // Save state when drawing
+    }
 }
+
 
 // Draw pixel function to fill the pixel
 function drawPixel(x, y, color) {
     ctx.fillStyle = color;
     ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+}
+
+// Erase pixel function to clear the pixel
+function erasePixel(x, y) {
+    ctx.clearRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize); // Clear the pixel
+}
+
+// Function to toggle eraser mode
+function toggleEraser() {
+    isErasing = !isErasing; // Toggle the eraser flag
+    const eraserBtn = document.getElementById('eraserBtn');
+    if (isErasing) {
+        eraserBtn.classList.add('active'); // Optionally add an active class for styling
+    } else {
+        eraserBtn.classList.remove('active');
+    }
 }
 
 // Function to generate pixel art
@@ -94,6 +117,19 @@ function generatePixelArt(artName) {
     }
 }
 
+// Function to toggle eraser mode
+function toggleEraser() {
+    isErasing = !isErasing; // Toggle the eraser flag
+    const eraserBtn = document.getElementById('eraserBtn');
+    
+    if (isErasing) {
+        eraserBtn.classList.add('active'); // Add active class for styling
+    } else {
+        eraserBtn.classList.remove('active'); // Remove active class
+    }
+}
+
+
 // Clear canvas button functionality
 clearBtn.addEventListener('click', () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -120,6 +156,8 @@ toggleDarkModeBtn.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode'); // Toggle the dark mode class
 });
 
+// Attach the eraser toggle functionality to the button
+document.getElementById('eraserBtn').addEventListener('click', toggleEraser);
 
 // Mouse event listeners for drawing functionality
 canvas.addEventListener('mousedown', startPosition);
