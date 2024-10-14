@@ -1,12 +1,20 @@
+
+console.log(typeof toIco); // This should log 'function' if loaded correctly
 console.log("App.js loaded!");
 
 const canvas = document.getElementById('pixelCanvas');
 const ctx = canvas.getContext('2d');
+
+
 const clearBtn = document.getElementById('clearBtn');
 const saveBtn = document.getElementById('saveBtn');
+const saveIcoBtn = document.getElementById('saveIcoBtn');
 const pixelArtSelector = document.getElementById('pixelArtSelector');
 const generateArtBtn = document.getElementById('generateArtBtn');
+const toggleDarkModeBtn = document.getElementById('toggleDarkMode');
+const eraserBtn = document.getElementById('eraserBtn');
 
+// Setup canvas size and pixel size
 const pixelSize = 20; // Size of each pixel in the grid
 const canvasSize = 500; // Size of the canvas
 canvas.width = canvasSize;
@@ -38,6 +46,8 @@ const pixelArtObjects = {
     // Add more pixel designs here
 };
 
+
+//State variables
 let painting = false; // Flag to track if the user is currently painting
 let isErasing = false; // Flag to track if the eraser is active
 
@@ -64,7 +74,6 @@ function draw(e) {
         erasePixel(x, y); // Call the erase function
     } else {
         drawPixel(x, y, colorPicker.value); // Use the color selected from the color picker
-        saveState(); // Save state when drawing
     }
 }
 
@@ -83,7 +92,7 @@ function erasePixel(x, y) {
 // Function to toggle eraser mode
 function toggleEraser() {
     isErasing = !isErasing; // Toggle the eraser flag
-    const eraserBtn = document.getElementById('eraserBtn');
+    
     if (isErasing) {
         eraserBtn.classList.add('active'); // Optionally add an active class for styling
     } else {
@@ -117,19 +126,6 @@ function generatePixelArt(artName) {
     }
 }
 
-// Function to toggle eraser mode
-function toggleEraser() {
-    isErasing = !isErasing; // Toggle the eraser flag
-    const eraserBtn = document.getElementById('eraserBtn');
-    
-    if (isErasing) {
-        eraserBtn.classList.add('active'); // Add active class for styling
-    } else {
-        eraserBtn.classList.remove('active'); // Remove active class
-    }
-}
-
-
 // Clear canvas button functionality
 clearBtn.addEventListener('click', () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -144,20 +140,41 @@ saveBtn.addEventListener('click', () => {
     link.click();
 });
 
+// Add an event listener to the "Save as ICO" button
+saveIcoBtn.addEventListener('click', async () => {
+    const dataUrl = canvas.toDataURL('image/png');
+    const imageData = dataUrl.split(',')[1]; // Extract the base64 data
+    const imageBuffer = Uint8Array.from(atob(imageData), c => c.charCodeAt(0));
+
+    // Use to-ico package to convert PNG to ICO
+    try {
+        const icoBuffer = await toIco([imageBuffer]);
+
+        // Create a blob for the ICO file and download it
+        const blob = new Blob([icoBuffer], { type: 'image/x-icon' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'pixel_art.ico';
+        link.click();
+    } catch (error) {
+        console.error('Error saving as ICO:', error);
+    }
+});
+
 // Generate pixel art button functionality
 generateArtBtn.addEventListener('click', () => {
     const selectedArt = pixelArtSelector.value;
     generatePixelArt(selectedArt);
 });
 
-const toggleDarkModeBtn = document.getElementById('toggleDarkMode');
+
 
 toggleDarkModeBtn.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode'); // Toggle the dark mode class
 });
 
-// Attach the eraser toggle functionality to the button
-document.getElementById('eraserBtn').addEventListener('click', toggleEraser);
+// Attach eraser toggle functionality to the button
+eraserBtn.addEventListener('click', toggleEraser);
 
 // Mouse event listeners for drawing functionality
 canvas.addEventListener('mousedown', startPosition);
