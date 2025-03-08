@@ -1,18 +1,17 @@
-
-console.log(typeof toIco); // This should log 'function' if loaded correctly
 console.log("App.js loaded!");
 
 const canvas = document.getElementById('pixelCanvas');
 const ctx = canvas.getContext('2d');
 
-
 const clearBtn = document.getElementById('clearBtn');
 const saveBtn = document.getElementById('saveBtn');
-const saveIcoBtn = document.getElementById('saveIcoBtn');
+const saveAsBtn = document.getElementById('saveAsBtn');
+const fileFormatSelector = document.getElementById('fileFormatSelector');
 const pixelArtSelector = document.getElementById('pixelArtSelector');
 const generateArtBtn = document.getElementById('generateArtBtn');
 const toggleDarkModeBtn = document.getElementById('toggleDarkMode');
 const eraserBtn = document.getElementById('eraserBtn');
+const colorPicker = document.getElementById('colorPicker');
 
 // Setup canvas size and pixel size
 const pixelSize = 20; // Size of each pixel in the grid
@@ -46,7 +45,6 @@ const pixelArtObjects = {
     // Add more pixel designs here
 };
 
-
 //State variables
 let painting = false; // Flag to track if the user is currently painting
 let isErasing = false; // Flag to track if the eraser is active
@@ -67,8 +65,9 @@ function endPosition() {
 function draw(e) {
     if (!painting) return;
 
-    const x = Math.floor((e.clientX - canvas.offsetLeft) / pixelSize);
-    const y = Math.floor((e.clientY - canvas.offsetTop) / pixelSize);
+    const rect = canvas.getBoundingClientRect();
+    const x = Math.floor((e.clientX - rect.left) / pixelSize);
+    const y = Math.floor((e.clientY - rect.top) / pixelSize);
     
     if (isErasing) {
         erasePixel(x, y); // Call the erase function
@@ -76,7 +75,6 @@ function draw(e) {
         drawPixel(x, y, colorPicker.value); // Use the color selected from the color picker
     }
 }
-
 
 // Draw pixel function to fill the pixel
 function drawPixel(x, y, color) {
@@ -120,7 +118,7 @@ function generatePixelArt(artName) {
 
     for (let y = 0; y < artHeight; y++) {
         for (let x = 0; x < artWidth; x++) {
-            const color = art[y][x] === 1 ? 'black' : 'transparent'; // Fill with black or leave transparent
+            const color = art[y][x] === 1 ? colorPicker.value : 'transparent'; // Use selected color
             drawPixel(x + offsetX, y + offsetY, color); // Draw pixel with offsets
         }
     }
@@ -131,34 +129,15 @@ clearBtn.addEventListener('click', () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 });
 
-// Save canvas to an image
+// Save canvas as PNG (legacy button)
 saveBtn.addEventListener('click', () => {
-    const dataUrl = canvas.toDataURL('image/png');
-    const link = document.createElement('a');
-    link.href = dataUrl;
-    link.download = 'pixel_logo.png';
-    link.click();
+    saveCanvasAs(canvas, 'png');
 });
 
-// Add an event listener to the "Save as ICO" button
-saveIcoBtn.addEventListener('click', async () => {
-    const dataUrl = canvas.toDataURL('image/png');
-    const imageData = dataUrl.split(',')[1]; // Extract the base64 data
-    const imageBuffer = Uint8Array.from(atob(imageData), c => c.charCodeAt(0));
-
-    // Use to-ico package to convert PNG to ICO
-    try {
-        const icoBuffer = await toIco([imageBuffer]);
-
-        // Create a blob for the ICO file and download it
-        const blob = new Blob([icoBuffer], { type: 'image/x-icon' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'pixel_art.ico';
-        link.click();
-    } catch (error) {
-        console.error('Error saving as ICO:', error);
-    }
+// New Save As button using the format selector
+saveAsBtn.addEventListener('click', () => {
+    const selectedFormat = fileFormatSelector.value;
+    saveCanvasAs(canvas, selectedFormat);
 });
 
 // Generate pixel art button functionality
@@ -166,8 +145,6 @@ generateArtBtn.addEventListener('click', () => {
     const selectedArt = pixelArtSelector.value;
     generatePixelArt(selectedArt);
 });
-
-
 
 toggleDarkModeBtn.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode'); // Toggle the dark mode class
@@ -180,3 +157,4 @@ eraserBtn.addEventListener('click', toggleEraser);
 canvas.addEventListener('mousedown', startPosition);
 canvas.addEventListener('mouseup', endPosition);
 canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseleave', endPosition); // Stop drawing when mouse leaves canvas
